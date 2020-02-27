@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Messaging\Events;
 
 use App\Messaging\Models\Message;
 use Illuminate\Queue\SerializesModels;
