@@ -25,4 +25,16 @@ class MessageBuilderTest extends TestCase
         $this->assertTrue($message->toUser->is($toUser));
         $this->assertEquals($text, $message->text);
     }
+
+    /** @test */
+    public function it_throws_an_error_if_we_dont_have_one_of_the_fields()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $fromUser = factory(User::class)->create();
+        $toUser = factory(User::class)->create();
+        $messageBuilder = app()->make(MessageBuilder::class);
+
+        $messageBuilder->setFromUser($fromUser)->setToUser($toUser)->build();
+    }
 }

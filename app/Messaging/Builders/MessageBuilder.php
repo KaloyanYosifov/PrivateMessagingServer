@@ -45,10 +45,27 @@ class MessageBuilder
 
     public function build(): Message
     {
+        $this->checkIfWeHaveRequiredFields();
+
         return Message::forceCreate([
             'from_user_id' => $this->fromUser->id,
             'to_user_id' => $this->toUser->id,
             'text' => $this->text,
         ]);
+    }
+
+    protected function checkIfWeHaveRequiredFields()
+    {
+        $fields = [
+            'fromUser',
+            'toUser',
+            'text',
+        ];
+
+        foreach ($fields as $field) {
+            if (!$this->{$field}) {
+                throw new \InvalidArgumentException("The field $field is required!");
+            }
+        }
     }
 }
