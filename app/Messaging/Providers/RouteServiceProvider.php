@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Messaging\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -14,14 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\Controllers';
-
-    /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
+    protected $namespace = 'App\Messaging\Http\Controllers';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -30,8 +23,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
     }
 
@@ -42,21 +33,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
+        $this->mapMessagingRoutes();
     }
 
     /**
-     * Define the "api" routes for the application.
+     * Define the "web" routes for the application.
      *
-     * These routes are typically stateless.
+     * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function mapMessagingRoutes()
     {
         Route::prefix('api/v1')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('routes/api.php'));
+            ->group(base_path('routes/messaging.php'));
     }
 }
