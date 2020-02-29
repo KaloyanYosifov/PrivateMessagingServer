@@ -16,7 +16,7 @@ class AddPassportClientToRequestMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($this->isTokenRoute($request)) {
+        if ($this->isTokenRoute($request) && $request->input('grant_type') === 'password') {
         }
 
         return $next($request);
