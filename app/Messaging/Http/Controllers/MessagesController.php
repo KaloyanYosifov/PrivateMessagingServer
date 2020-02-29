@@ -3,6 +3,7 @@
 namespace App\Messaging\Http\Controllers;
 
 use App\Messaging\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use App\Messaging\Services\CreateMessageService;
 use App\Messaging\Http\Requests\ShowMessageRequest;
 use App\Messaging\Http\Requests\CreateMessageRequest;
@@ -12,7 +13,7 @@ class MessagesController
 {
     public function index()
     {
-        return response()->json(Message::paginate(15));
+        return response()->json(Auth::user()->messages()->simplePaginate());
     }
 
     public function show(ShowMessageRequest $request, Message $message)
