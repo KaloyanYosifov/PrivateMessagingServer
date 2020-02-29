@@ -31,4 +31,9 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'to_user_id');
     }
+
+    public function getRouteKeyName(): string
+    {
+        return $this->unique_id;
+    }
 }
