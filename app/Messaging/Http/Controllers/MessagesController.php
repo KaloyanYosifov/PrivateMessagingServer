@@ -4,6 +4,7 @@ namespace App\Messaging\Http\Controllers;
 
 use App\Messaging\Models\Message;
 use App\Messaging\Services\CreateMessageService;
+use App\Messaginng\Http\Requests\ShowMessageRequest;
 use App\Messaginng\Http\Requests\CreateMessageRequest;
 use App\Messaginng\Http\Requests\UpdateMessageRequest;
 
@@ -12,6 +13,11 @@ class MessagesController
     public function index()
     {
         return response()->json(Message::paginate(15));
+    }
+
+    public function show(ShowMessageRequest $request, Message $message)
+    {
+        return response()->json($message);
     }
 
     public function store(CreateMessageRequest $request, CreateMessageService $createMessageService)
