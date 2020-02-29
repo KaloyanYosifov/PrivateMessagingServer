@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messaginng\Http\Requests;
+namespace App\Messaging\Http\Requests;
 
 use App\Messaging\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +15,7 @@ class UpdateMessageRequest extends FormRequest
      */
     public function authorize()
     {
-        $message = Message::with('fromUser')->find($this->route('message'));
+        $message = Message::with('fromUser')->find($this->route('message'))->first();
 
         return Auth::id() === $message->fromUser->id;
     }

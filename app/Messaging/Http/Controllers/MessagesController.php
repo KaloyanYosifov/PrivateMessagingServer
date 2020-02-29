@@ -4,9 +4,9 @@ namespace App\Messaging\Http\Controllers;
 
 use App\Messaging\Models\Message;
 use App\Messaging\Services\CreateMessageService;
-use App\Messaginng\Http\Requests\ShowMessageRequest;
-use App\Messaginng\Http\Requests\CreateMessageRequest;
-use App\Messaginng\Http\Requests\UpdateMessageRequest;
+use App\Messaging\Http\Requests\ShowMessageRequest;
+use App\Messaging\Http\Requests\CreateMessageRequest;
+use App\Messaging\Http\Requests\UpdateMessageRequest;
 
 class MessagesController
 {

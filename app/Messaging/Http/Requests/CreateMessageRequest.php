@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Messaginng\Http\Requests;
+namespace App\Messaging\Http\Requests;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;

@@ -34,6 +34,6 @@ class Message extends Model
 
     public function getRouteKeyName(): string
     {
-        return $this->unique_id;
+        return 'unique_id';
     }
 }
