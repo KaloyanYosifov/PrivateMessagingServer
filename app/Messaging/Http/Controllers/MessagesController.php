@@ -2,6 +2,7 @@
 
 namespace App\Messaging\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Messaging\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use App\Messaging\Services\CreateMessageService;
@@ -11,9 +12,11 @@ use App\Messaging\Http\Requests\UpdateMessageRequest;
 
 class MessagesController
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Auth::user()->messages()->simplePaginate());
+        $query = $request->input('received') ? Auth::user()->receivedMessages() : Auth::user()->sentMessages();
+
+        return response()->json($query->simplePaginate(30));
     }
 
     public function show(ShowMessageRequest $request, Message $message)
