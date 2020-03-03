@@ -16,7 +16,7 @@ class MessagesController
     {
         $query = $request->input('received') ? Auth::user()->receivedMessages() : Auth::user()->sentMessages();
 
-        return response()->json($query->simplePaginate(30));
+        return response()->paginate($query, 30);
     }
 
     public function show(ShowMessageRequest $request, Message $message)
