@@ -4,8 +4,14 @@ namespace App;
 
 use App\Messaging\Models\Message;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Messaging\Models\Conversation;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+use App\Messaging\Models\ConversationUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -38,13 +44,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function sentMessages()
+    public function conversations(): BelongsToMany
     {
-        return $this->hasMany(Message::class, 'from_user_id');
+        return $this->belongsToMany(Conversation::class);
     }
 
-    public function receivedMessages()
+    public function messages(): HasMany
     {
-        return $this->hasMany(Message::class, 'to_user_id');
+        return $this->hasMany(Message::class);
+    }
+
+    public function sentMessages(int $conversationId): HasMany
+    {
+        return $this->messages()->where('conversation_id', $conversationId);
     }
 }

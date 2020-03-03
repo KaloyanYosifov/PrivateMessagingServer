@@ -5,35 +5,58 @@ namespace Tests\Unit;
 use App\User;
 use Tests\TestCase;
 use App\Messaging\Models\Message;
+use App\Messaging\Models\Conversation;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UserTest extends TestCase
 {
     use DatabaseTransactions;
+    use WithFaker;
 
     /** @test */
-    public function it_has_sent_and_received_messages()
+    public function it_has_sent_messages_from_conversations()
     {
-        $MESSAGES_TO_CREATE = 3;
+        $conversation = factory(Conversation::class)->create();
+        $secondConversation = factory(Conversation::class)->create();
         $user = factory(User::class)->create();
-        $user2 = factory(User::class)->create();
-        $messages = factory(Message::class, $MESSAGES_TO_CREATE)->create([
-            'from_user_id' => $user,
-            'to_user_id' => $user2,
-        ]);
+        $firstConversationSentMessagesId = [];
+        $secondConversationSentMessagesId = [];
 
-        $this->assertTrue($user2->sentMessages->isEmpty());
-        $this->assertTrue($user->receivedMessages->isEmpty());
+        $this->assertEquals(0, $user->sentMessages($conversation->id)->count());
 
-        $this->assertFalse($user->sentMessages->isEmpty());
-        $this->assertFalse($user2->receivedMessages->isEmpty());
+        $firstConversationSentMessagesId[] = $this->createMessage($conversation->id, $user->id)->id;
+        $firstConversationSentMessagesId[] = $this->createMessage($conversation->id, $user->id)->id;
+        $secondConversationSentMessagesId[] = $this->createMessage($secondConversation->id, $user->id)->id;
 
-        foreach ($messages as $message) {
-            $this->assertTrue($user->sentMessages->contains('id', $message->id));
+        $user->fresh();
+
+        $firstConversationSentMessagesQuery = $user->sentMessages($conversation->id);
+        $secondConversationSentMessagesQuery = $user->sentMessages($secondConversation->id);
+
+        $this->assertEquals(2, $firstConversationSentMessagesQuery->count());
+        $this->assertEquals(1, $secondConversationSentMessagesQuery->count());
+
+        $firstConversationSentMessages = $firstConversationSentMessagesQuery->get();
+        $secondConversationSentMessages = $secondConversationSentMessagesQuery->get();
+
+        foreach ($firstConversationSentMessages as $message) {
+            $this->assertTrue(in_array($message->id, $firstConversationSentMessagesId));
         }
 
-        foreach ($messages as $message) {
-            $this->assertTrue($user2->receivedMessages->contains('id', $message->id));
+        foreach ($secondConversationSentMessages as $message) {
+            $this->assertTrue(in_array($message->id, $secondConversationSentMessagesId));
         }
+    }
+
+    protected function createMessage(int $conversationId, int $userId): Message
+    {
+        $message = new Message();
+        $message->conversation_id = $conversationId;
+        $message->user_id = $userId;
+        $message->text = $this->faker->text;
+        $message->save();
+
+        return $message;
     }
 }

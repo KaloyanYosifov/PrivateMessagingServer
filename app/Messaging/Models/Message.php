@@ -22,14 +22,14 @@ class Message extends Model
         });
     }
 
-    public function fromUser(): BelongsTo
+    public function conversation(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'from_user_id');
+        return $this->belongsTo(Conversation::class);
     }
 
-    public function toUser(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'to_user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function getRouteKeyName(): string
