@@ -49,6 +49,20 @@ class UserTest extends TestCase
         }
     }
 
+    /** @test */
+    public function it_has_conversations()
+    {
+        $user = factory(User::class)->create();
+
+        $this->assertEquals(0, $user->conversations()->count());
+
+        $user->conversations()->create();
+
+        $user->fresh();
+
+        $this->assertEquals(1, $user->conversations()->count());
+    }
+
     protected function createMessage(int $conversationId, int $userId): Message
     {
         $message = new Message();
