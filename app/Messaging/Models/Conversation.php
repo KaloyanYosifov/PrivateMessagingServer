@@ -18,4 +18,24 @@ class Conversation extends Model
         return $this->hasMany(Message::class);
     }
 
+    /**
+     * @param User $user
+     * @param User $user2
+     * @return Conversation|null
+     */
+    public static function findOrCreate(User $user, User $user2): ?Conversation
+    {
+        /**
+         * @var Conversation $conversation
+         */
+        $conversation = Conversation::whereIn('user_id', [$user->id, $user2->id])->first();
+
+        if (!$conversation) {
+            return tap($user->conversations()->create(), function (Conversation $conversation) use ($user2) {
+                $conversation->users()->attach([$user2->id]);
+            });
+        }
+
+        return $conversation;
+    }
 }

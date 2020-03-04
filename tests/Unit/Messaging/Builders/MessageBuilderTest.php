@@ -21,8 +21,7 @@ class MessageBuilderTest extends TestCase
 
         $message = $messageBuilder->setFromUser($fromUser)->setToUser($toUser)->setText($text)->build();
 
-        $this->assertTrue($message->fromUser->is($fromUser));
-        $this->assertTrue($message->toUser->is($toUser));
+        $this->assertTrue($message->user->is($fromUser));
         $this->assertEquals($text, $message->text);
     }
 

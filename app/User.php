@@ -6,12 +6,9 @@ use App\Messaging\Models\Message;
 use Laravel\Passport\HasApiTokens;
 use App\Messaging\Models\Conversation;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
-use App\Messaging\Models\ConversationUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {

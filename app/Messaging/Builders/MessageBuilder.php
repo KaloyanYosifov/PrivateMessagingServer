@@ -3,7 +3,10 @@
 namespace App\Messaging\Builders;
 
 use App\User;
+use ConversationUsersTable;
 use App\Messaging\Models\Message;
+use App\Messaging\Models\Conversation;
+use App\Messaging\Models\ConversationUser;
 
 class MessageBuilder
 {
@@ -47,9 +50,11 @@ class MessageBuilder
     {
         $this->checkIfWeHaveRequiredFields();
 
+        $conversation = Conversation::findOrCreate($this->fromUser, $this->toUser);
+
         return Message::forceCreate([
-            'from_user_id' => $this->fromUser->id,
-            'to_user_id' => $this->toUser->id,
+            'user_id' => $this->fromUser->id,
+            'conversation_id' => $conversation->id,
             'text' => $this->text,
         ]);
     }

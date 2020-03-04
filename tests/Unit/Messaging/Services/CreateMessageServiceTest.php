@@ -17,7 +17,7 @@ class CreateMessageServiceTest extends TestCase
     /** @test */
     public function it_creates_a_message_and_emits_an_event()
     {
-        Event::fake();
+        Event::fake(MessageCreatedEvent::class);
 
         $fromUser = factory(User::class)->create();
         $toUser = factory(User::class)->create();
