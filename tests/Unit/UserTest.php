@@ -63,6 +63,28 @@ class UserTest extends TestCase
         $this->assertEquals(1, $user->conversations()->count());
     }
 
+    /** @test */
+    public function it_checks_if_it_is_in_conversation()
+    {
+        $user = factory(User::class)->create();
+        $aConversationUserIsIn = $user->conversations()->create();
+        $conversation = factory(Conversation::class)->create();
+
+        $this->assertFalse($user->isInConversation($conversation));
+        $this->assertTrue($user->isInConversation($aConversationUserIsIn));
+    }
+
+    /** @test */
+    public function it_can_accept_and_id_as_conversation()
+    {
+        $user = factory(User::class)->create();
+        $aConversationUserIsIn = $user->conversations()->create();
+        $conversation = factory(Conversation::class)->create();
+
+        $this->assertFalse($user->isInConversation($conversation->id));
+        $this->assertTrue($user->isInConversation($aConversationUserIsIn->id));
+    }
+
     protected function createMessage(int $conversationId, int $userId): Message
     {
         $message = new Message();

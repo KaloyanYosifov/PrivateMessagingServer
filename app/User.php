@@ -55,4 +55,19 @@ class User extends Authenticatable
     {
         return $this->messages()->where('conversation_id', $conversationId);
     }
+
+    /**
+     * @param Conversation|int $conversation
+     * @return bool
+     */
+    public function isInConversation($conversation): bool
+    {
+        $conversationId = $conversation;
+
+        if ($conversation instanceof Conversation) {
+            $conversationId = $conversation->id;
+        }
+
+        return $this->conversations()->where('conversation_id', $conversationId)->count() > 0;
+    }
 }

@@ -16,7 +16,7 @@ class ConversationController extends Controller
         return response()->paginate(Auth::user()->conversations(), 30);
     }
 
-    public function show(ShowMessageRequest $request, Message $message)
+    public function show(ShowConversationRequest $request, Message $message)
     {
         return response()->json($message);
     }
