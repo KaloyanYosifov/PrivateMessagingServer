@@ -93,6 +93,7 @@ return [
 
     'model_locations' => [
         'app',
+        'app/Messaging/Models',
     ],
 
     /*

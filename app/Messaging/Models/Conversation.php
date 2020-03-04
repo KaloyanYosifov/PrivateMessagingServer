@@ -28,14 +28,15 @@ class Conversation extends Model
         /**
          * @var Conversation $conversation
          */
-        $conversation = Conversation::whereIn('user_id', [$user->id, $user2->id])->first();
+        \DB::enableQueryLog();
+        $conversationPivot = ConversationUser::whereIn('user_id', [$user->id, $user2->id])->first();
 
-        if (!$conversation) {
-            return tap($user->conversations()->create(), function (Conversation $conversation) use ($user2) {
-                $conversation->users()->attach([$user2->id]);
+        if (!$conversationPivot) {
+            return tap(Conversation::create(), function (Conversation $conversation) use ($user, $user2) {
+                $conversation->users()->attach([$user->id, $user2->id]);
             });
         }
 
-        return $conversation;
+        return $conversationPivot->conversation;
     }
 }
