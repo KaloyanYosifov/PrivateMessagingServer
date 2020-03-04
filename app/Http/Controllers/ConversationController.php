@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Messaging\Models\Conversation;
 use App\Messaging\Http\Requests\ShowConversationRequest;
+use App\Messaging\Http\Requests\DeleteConversationRequest;
 
 class ConversationController extends Controller
 {
@@ -17,5 +18,12 @@ class ConversationController extends Controller
     public function show(ShowConversationRequest $request, Conversation $conversation)
     {
         return response()->json($conversation);
+    }
+
+    public function delete(DeleteConversationRequest $request, Conversation $conversation)
+    {
+        $conversation->delete();
+
+        return response()->json([]);
     }
 }
