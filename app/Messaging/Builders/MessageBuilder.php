@@ -5,6 +5,7 @@ namespace App\Messaging\Builders;
 use App\User;
 use App\Messaging\Models\Message;
 use App\Messaging\Models\Conversation;
+use App\Messaging\Exceptions\UserNotInConversationException;
 
 class MessageBuilder
 {
@@ -28,14 +29,14 @@ class MessageBuilder
      */
     protected $conversation;
 
-    public function setFromUser(User $fromUser): self
+    public function setSender(User $fromUser): self
     {
         $this->fromUser = $fromUser;
 
         return $this;
     }
 
-    public function setToUser(User $toUser): self
+    public function setReceiver(User $toUser): self
     {
         $this->toUser = $toUser;
 
@@ -56,11 +57,17 @@ class MessageBuilder
         return $this;
     }
 
+    /**
+     * @return Message
+     * @throws \Throwable
+     */
     public function build(): Message
     {
         $this->checkIfWeHaveRequiredFields();
 
         $conversation = $this->conversation ?? Conversation::findOrCreate($this->fromUser, $this->toUser);
+
+        throw_unless($conversation->hasUser($this->fromUser), UserNotInConversationException::class);
 
         return Message::forceCreate([
             'user_id' => $this->fromUser->id,

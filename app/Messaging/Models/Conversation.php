@@ -39,4 +39,9 @@ class Conversation extends Model
 
         return $conversationPivot->conversation;
     }
+
+    public function hasUser(User $user): bool
+    {
+        return $this->users()->where('user_id', $user->id)->count() > 0;
+    }
 }

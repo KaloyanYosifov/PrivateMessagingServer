@@ -23,7 +23,7 @@ class CreateMessageServiceTest extends TestCase
         $toUser = factory(User::class)->create();
         $text = 'Some text';
         $messageBuilder = app()->make(MessageBuilder::class);
-        $messageBuilder = $messageBuilder->setFromUser($fromUser)->setToUser($toUser)->setText($text);
+        $messageBuilder = $messageBuilder->setSender($fromUser)->setReceiver($toUser)->setText($text);
         $message = app()->make(CreateMessageService::class)->createMessage($messageBuilder);
 
         Event::assertDispatched(MessageCreatedEvent::class, function (MessageCreatedEvent $event) use ($message) {

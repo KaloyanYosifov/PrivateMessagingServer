@@ -7,6 +7,7 @@ use App\Messaging\Models\Conversation;
 use App\Messaging\Builders\MessageBuilder;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Messaging\Exceptions\UserNotInConversationException;
 
 class MessageBuilderTest extends TestCase
 {
@@ -20,7 +21,7 @@ class MessageBuilderTest extends TestCase
         $text = 'Some text';
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $message = $messageBuilder->setFromUser($fromUser)->setToUser($toUser)->setText($text)->build();
+        $message = $messageBuilder->setSender($fromUser)->setReceiver($toUser)->setText($text)->build();
 
         $this->assertTrue($message->user->is($fromUser));
         $this->assertEquals($text, $message->text);
@@ -37,7 +38,7 @@ class MessageBuilderTest extends TestCase
         $text = 'Some text';
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $message = $messageBuilder->setFromUser($fromUser)->setConversation($conversation)->setText($text)->build();
+        $message = $messageBuilder->setSender($fromUser)->setConversation($conversation)->setText($text)->build();
 
         $this->assertTrue($message->user->is($fromUser));
         $this->assertEquals($message->conversation->id, $conversation->id);
@@ -53,7 +54,7 @@ class MessageBuilderTest extends TestCase
         $toUser = factory(User::class)->create();
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $messageBuilder->setFromUser($fromUser)->setToUser($toUser)->build();
+        $messageBuilder->setSender($fromUser)->setReceiver($toUser)->build();
     }
 
     /** @test */
@@ -65,7 +66,7 @@ class MessageBuilderTest extends TestCase
         $text = 'test';
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $messageBuilder->setFromUser($fromUser)->setText($text)->build();
+        $messageBuilder->setSender($fromUser)->setText($text)->build();
     }
 
     /** @test */
@@ -79,8 +80,25 @@ class MessageBuilderTest extends TestCase
         $text = 'test';
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $messageBuilder->setFromUser($fromUser)->setConversation($conversation)->setText($text)->build();
+        $messageBuilder->setSender($fromUser)->setConversation($conversation)->setText($text)->build();
 
         $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_throws_an_error_if_sender_is_not_in_conversation()
+    {
+        $this->expectException(UserNotInConversationException::class);
+
+        $sender = factory(User::class)->create();
+        $fakeSender = factory(User::class)->create();
+        /**
+         * @var Conversation $conversation
+         */
+        $conversation = $sender->conversations()->create();
+        $text = 'Some text';
+        $messageBuilder = app()->make(MessageBuilder::class);
+
+        $messageBuilder->setSender($fakeSender)->setConversation($conversation)->setText($text)->build();
     }
 }

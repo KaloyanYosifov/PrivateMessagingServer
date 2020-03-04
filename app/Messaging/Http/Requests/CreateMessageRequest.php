@@ -4,6 +4,7 @@ namespace App\Messaging\Http\Requests;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\Messaging\Models\Conversation;
 use App\Messaging\Builders\MessageBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,18 +28,23 @@ class CreateMessageRequest extends FormRequest
     public function rules()
     {
         return [
-            'to_user_id' => 'required|exists:users,id',
+            'receiver_id' => 'required_if_null:conversation_id|exists:users,id',
+            'conversation_id' => 'required_if_null:receiver_id|exists:conversations,id',
             'text' => 'required|string',
         ];
     }
 
     public function getBuilder(): MessageBuilder
     {
-        $builder = app()->make(MessageBuilder::class);
-        $fromUser = User::find($this->input('to_user_id'));
+        return tap(app()->make(MessageBuilder::class), function (MessageBuilder $builder) {
+            if ($conversationId = $this->input('conversation_id')) {
+                $builder->setConversation(Conversation::find($conversationId));
+            } elseif ($receiverId = $this->input('receiver_id')) {
+                $builder->setReceiver(User::find($receiverId));
+            }
 
-        return $builder->setFromUser(Auth::user())
-            ->setToUser($fromUser)
-            ->setText($this->input('text'));
+            $builder->setSender(Auth::user())
+                ->setText($this->input('text'));
+        });
     }
 }
