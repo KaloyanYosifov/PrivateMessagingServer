@@ -2,10 +2,11 @@
 
 namespace App\Messaging\Http\Requests;
 
+use App\Messaging\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShowConversationRequest extends FormRequest
+class DeleteMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +15,9 @@ class ShowConversationRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->isInConversation($this->route('conversation'));
+        $message = Message::find($this->route('message'))->first();
+
+        return Auth::id() === $message->user_id;
     }
 
     /**

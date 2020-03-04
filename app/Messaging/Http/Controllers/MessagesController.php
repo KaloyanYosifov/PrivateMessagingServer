@@ -9,6 +9,7 @@ use App\Messaging\Services\CreateMessageService;
 use App\Messaging\Http\Requests\ShowMessageRequest;
 use App\Messaging\Http\Requests\CreateMessageRequest;
 use App\Messaging\Http\Requests\UpdateMessageRequest;
+use App\Messaging\Http\Requests\DeleteMessageRequest;
 
 class MessagesController
 {
@@ -40,5 +41,12 @@ class MessagesController
         return response()->json(
             tap($message)->update($request->all())
         );
+    }
+
+    public function delete(DeleteMessageRequest $request, Message $message)
+    {
+        $message->delete();
+
+        return response()->json();
     }
 }
