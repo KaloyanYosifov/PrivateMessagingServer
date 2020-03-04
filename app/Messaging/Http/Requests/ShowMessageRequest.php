@@ -15,9 +15,9 @@ class ShowMessageRequest extends FormRequest
      */
     public function authorize()
     {
-        $message = Message::with(['fromUser', 'toUser'])->find($this->route('message'))->first();
+        $message = Message::find($this->route('message'))->first();
 
-        return Auth::id() === $message->fromUser->id || Auth::id() === $message->toUser->id;
+        return Auth::id() === $message->user_id;
     }
 
     /**

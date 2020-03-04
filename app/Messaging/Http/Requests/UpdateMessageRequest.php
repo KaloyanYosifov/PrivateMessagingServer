@@ -15,9 +15,9 @@ class UpdateMessageRequest extends FormRequest
      */
     public function authorize()
     {
-        $message = Message::with('fromUser')->find($this->route('message'))->first();
+        $message = Message::find($this->route('message'))->first();
 
-        return Auth::id() === $message->fromUser->id;
+        return Auth::id() === $message->user_id;
     }
 
     /**

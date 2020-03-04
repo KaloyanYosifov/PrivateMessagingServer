@@ -3,10 +3,8 @@
 namespace App\Messaging\Builders;
 
 use App\User;
-use ConversationUsersTable;
 use App\Messaging\Models\Message;
 use App\Messaging\Models\Conversation;
-use App\Messaging\Models\ConversationUser;
 
 class MessageBuilder
 {
@@ -25,6 +23,11 @@ class MessageBuilder
      */
     protected $text;
 
+    /**
+     * @var Conversation|null
+     */
+    protected $conversation;
+
     public function setFromUser(User $fromUser): self
     {
         $this->fromUser = $fromUser;
@@ -35,6 +38,13 @@ class MessageBuilder
     public function setToUser(User $toUser): self
     {
         $this->toUser = $toUser;
+
+        return $this;
+    }
+
+    public function setConversation(Conversation $conversation)
+    {
+        $this->conversation = $conversation;
 
         return $this;
     }
@@ -50,7 +60,7 @@ class MessageBuilder
     {
         $this->checkIfWeHaveRequiredFields();
 
-        $conversation = Conversation::findOrCreate($this->fromUser, $this->toUser);
+        $conversation = $this->conversation ?? Conversation::findOrCreate($this->fromUser, $this->toUser);
 
         return Message::forceCreate([
             'user_id' => $this->fromUser->id,
@@ -63,7 +73,6 @@ class MessageBuilder
     {
         $fields = [
             'fromUser',
-            'toUser',
             'text',
         ];
 
@@ -71,6 +80,10 @@ class MessageBuilder
             if (!$this->{$field}) {
                 throw new \InvalidArgumentException("The field $field is required!");
             }
+        }
+
+        if (!$this->toUser && !$this->conversation) {
+            throw new \InvalidArgumentException("You need to specify at least a conversation or a toUser!");
         }
     }
 }

@@ -1,26 +1,19 @@
 <?php
 
-namespace App\Messaging\Http\Controllers;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Messaging\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use App\Messaging\Services\CreateMessageService;
 use App\Messaging\Http\Requests\ShowMessageRequest;
 use App\Messaging\Http\Requests\CreateMessageRequest;
 use App\Messaging\Http\Requests\UpdateMessageRequest;
 
-class MessagesController
+class ConversationController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Message::whereNotNull();
-
-        if ($conversationId = $request->input('conversation_id')) {
-            $query->where('conversation_id', $conversationId);
-        }
-
-        return response()->paginate($query, 30);
+        return response()->paginate(Auth::user()->conversations(), 30);
     }
 
     public function show(ShowMessageRequest $request, Message $message)
