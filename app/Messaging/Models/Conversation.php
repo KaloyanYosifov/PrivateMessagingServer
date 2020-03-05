@@ -28,7 +28,6 @@ class Conversation extends Model
         /**
          * @var Conversation $conversation
          */
-        \DB::enableQueryLog();
         $conversationPivot = ConversationUser::whereIn('user_id', [$user->id, $user2->id])->first();
 
         if (!$conversationPivot) {
