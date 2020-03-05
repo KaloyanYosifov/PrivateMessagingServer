@@ -39,10 +39,45 @@ class ConversationTest extends TestCase
         $conversation = factory(Conversation::class)->create();
 
         $conversation->users()->attach([$user->id, $user2->id]);
-        $conversation->save();
 
         $newConversation = Conversation::findOrCreate($user, $user2);
 
         $this->assertTrue($conversation->is($newConversation));
+    }
+
+    /** @test */
+    public function it_can_load_all_of_its_users()
+    {
+        $user = factory(User::class)->create();
+        $user2 = factory(User::class)->create();
+        $conversation = factory(Conversation::class)->create();
+
+        $conversation->users()->attach([$user->id, $user2->id]);
+
+        $freshConversation = Conversation::find($conversation->id);
+
+        $this->assertArrayNotHasKey('users', $freshConversation->toArray());
+
+        $freshConversation->loadUsers();
+
+        $this->assertArrayHasKey('users', $freshConversation->toArray());
+        $this->assertCount(2, $freshConversation->users);
+    }
+
+    /** @test */
+    public function it_can_load_all_of_its_users_and_can_choose_to_not_load_some()
+    {
+        $user = factory(User::class)->create();
+        $user2 = factory(User::class)->create();
+        $conversation = factory(Conversation::class)->create();
+
+        $conversation->users()->attach([$user->id, $user2->id]);
+
+        $freshConversation = Conversation::find($conversation->id);
+
+        $freshConversation->loadUsers([$user->id]);
+
+        $this->assertCount(1, $freshConversation->users);
+        $this->assertTrue($freshConversation->users[0]->is($user2));
     }
 }

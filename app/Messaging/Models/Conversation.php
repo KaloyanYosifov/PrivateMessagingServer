@@ -43,4 +43,23 @@ class Conversation extends Model
     {
         return $this->users()->where('user_id', $user->id)->count() > 0;
     }
+
+    /**
+     * @param int[] $withoutUsers
+     * @return $this
+     */
+    public function loadUsers(array $withoutUsers = []): self
+    {
+        $this->load([
+            'users' => function ($query) use ($withoutUsers) {
+                if (!$withoutUsers) {
+                    return;
+                }
+
+                $query->whereNotIn('user_id', $withoutUsers);
+            },
+        ]);
+
+        return $this;
+    }
 }
