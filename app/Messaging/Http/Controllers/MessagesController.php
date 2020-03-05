@@ -4,7 +4,6 @@ namespace App\Messaging\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Messaging\Models\Message;
-use Illuminate\Support\Facades\Auth;
 use App\Messaging\Services\CreateMessageService;
 use App\Messaging\Http\Requests\ShowMessageRequest;
 use App\Messaging\Http\Requests\CreateMessageRequest;
@@ -15,7 +14,7 @@ class MessagesController
 {
     public function index(Request $request)
     {
-        $query = Message::whereNotNull();
+        $query = Message::whereNotNull('id');
 
         if ($conversationId = $request->input('conversation_id')) {
             $query->where('conversation_id', $conversationId);
@@ -43,7 +42,7 @@ class MessagesController
         );
     }
 
-    public function delete(DeleteMessageRequest $request, Message $message)
+    public function destroy(DeleteMessageRequest $request, Message $message)
     {
         $message->delete();
 

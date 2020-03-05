@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Messaging\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -8,7 +8,7 @@ use App\Messaging\Models\Conversation;
 use App\Messaging\Http\Requests\ShowConversationRequest;
 use App\Messaging\Http\Requests\DeleteConversationRequest;
 
-class ConversationController extends Controller
+class ConversationController
 {
     public function index(Request $request)
     {
@@ -20,7 +20,7 @@ class ConversationController extends Controller
         return response()->json($conversation);
     }
 
-    public function delete(DeleteConversationRequest $request, Conversation $conversation)
+    public function destroy(DeleteConversationRequest $request, Conversation $conversation)
     {
         $conversation->delete();
 

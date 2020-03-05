@@ -28,8 +28,8 @@ class CreateMessageRequest extends FormRequest
     public function rules()
     {
         return [
-            'receiver_id' => 'required_if_null:conversation_id|exists:users,id',
-            'conversation_id' => 'required_if_null:receiver_id|exists:conversations,id',
+            'receiver_id' => 'required_without:conversation_id|exists:users,id',
+            'conversation_id' => 'required_without:receiver_id|exists:conversations,id',
             'text' => 'required|string',
         ];
     }
