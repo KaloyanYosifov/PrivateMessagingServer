@@ -12,7 +12,17 @@ class ConversationController
 {
     public function index(Request $request)
     {
-        return response()->paginate(Auth::user()->conversations(), 30);
+        return response()->paginate(
+            Auth::user()
+                ->conversations()
+                ->with([
+                    'users' => function ($query) {
+                        $query->where('user_id', '<>', Auth::id());
+                    },
+                ])
+            ,
+            30
+        );
     }
 
     public function show(ShowConversationRequest $request, Conversation $conversation)
