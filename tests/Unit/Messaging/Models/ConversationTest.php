@@ -3,6 +3,8 @@
 namespace Tests\Unit\Messaging\Models;
 
 use App\User;
+use Carbon\Carbon;
+use App\Messaging\Models\Message;
 use App\Messaging\Models\Conversation;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -79,5 +81,23 @@ class ConversationTest extends TestCase
 
         $this->assertCount(1, $freshConversation->users);
         $this->assertTrue($freshConversation->users[0]->is($user2));
+    }
+
+    /** @test */
+    public function it_can_get_last_message()
+    {
+        $conversation = factory(Conversation::class)->create();
+
+        factory(Message::class, 10)->create([
+            'conversation_id' => $conversation->id,
+            'created_at' => Carbon::now()->subDay(),
+        ]);
+
+        $latestMessage = factory(Message::class)->create([
+            'conversation_id' => $conversation->id,
+            'created_at' => Carbon::now()->addDay(),
+        ]);
+
+        $this->assertTrue($latestMessage->is($conversation->last_message));
     }
 }

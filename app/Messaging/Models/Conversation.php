@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Conversation extends Model
 {
+    protected $appends = ['last_message'];
+
     public function users()
     {
         return $this->belongsToMany(User::class);
@@ -16,6 +18,16 @@ class Conversation extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function getLastMessageAttribute(): ?Message
+    {
+        /**
+         * @var Message|null $message
+         */
+        $message = $this->messages()->latest()->first();
+
+        return $message;
     }
 
     /**
