@@ -13,6 +13,12 @@ class Message extends Model
         'text',
     ];
 
+    protected $hidden = [
+        'user_id',
+    ];
+
+    protected $with = ['user'];
+
     public static function boot()
     {
         parent::boot();
