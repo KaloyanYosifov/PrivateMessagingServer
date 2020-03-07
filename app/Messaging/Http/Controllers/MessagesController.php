@@ -14,7 +14,7 @@ class MessagesController
 {
     public function index(Request $request)
     {
-        $query = Message::whereNotNull('id');
+        $query = Message::whereNotNull('id')->orderBy('created_at', 'ASC');
 
         if ($conversationId = $request->input('conversation_id')) {
             $query->where('conversation_id', $conversationId);
