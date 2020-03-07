@@ -48,6 +48,28 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
+    public function it_creates_a_conversation_if_there_is_none_between_one_user_and_another_event_if_first_user_has_an_existing_conversation(
+    )
+    {
+        $user = factory(User::class)->create();
+        $user2 = factory(User::class)->create();
+        $user3 = factory(User::class)->create();
+        $conversation = factory(Conversation::class)->create();
+
+        $conversation->users()->attach([$user->id, $user2->id]);
+
+        $newConversation = Conversation::findOrCreate($user, $user3);
+
+        $this->assertTrue($newConversation->hasUser($user));
+        $this->assertTrue($newConversation->hasUser($user3));
+
+        $newConversationWithSecondUser = Conversation::findOrCreate($user2, $user3);
+
+        $this->assertTrue($newConversationWithSecondUser->hasUser($user2));
+        $this->assertTrue($newConversationWithSecondUser->hasUser($user3));
+    }
+
+    /** @test */
     public function it_can_load_all_of_its_users()
     {
         $user = factory(User::class)->create();

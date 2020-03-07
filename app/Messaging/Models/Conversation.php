@@ -3,6 +3,7 @@
 namespace App\Messaging\Models;
 
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -40,15 +41,24 @@ class Conversation extends Model
         /**
          * @var Conversation $conversation
          */
-        $conversationPivot = ConversationUser::whereIn('user_id', [$user->id, $user2->id])->first();
+        $table = (new ConversationUser())->getTable();
+        $foundConversation = DB::table("$table as user1")
+            ->select('*')
+            ->where('user1.user_id', $user->id)
+            ->join("$table as user2", 'user2.conversation_id', '=', 'user1.conversation_id')
+            ->where('user2.user_id', $user2->id)
+            ->pluck('conversation_id')
+            ->toArray();
 
-        if (!$conversationPivot) {
+        // if the conversation pivot hasn't found two records
+        // it means that one of the users are not in a conversation
+        if (!$foundConversation) {
             return tap(Conversation::create(), function (Conversation $conversation) use ($user, $user2) {
                 $conversation->users()->attach([$user->id, $user2->id]);
             });
         }
 
-        return $conversationPivot->conversation;
+        return Conversation::find($foundConversation[0])->first();
     }
 
     public function hasUser(User $user): bool
