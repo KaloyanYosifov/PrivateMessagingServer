@@ -18,6 +18,8 @@ class ConversationUsersTable extends Migration
             $table->unsignedBigInteger('conversation_id')->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->timestamps();
+
+            $table->index('updated_at')->index();
         });
     }
 

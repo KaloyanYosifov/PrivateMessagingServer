@@ -20,6 +20,7 @@ class ConversationController
                         $query->where('user_id', '<>', Auth::id());
                     },
                 ])
+                ->latest('updated_at')
             ,
             30
         );
