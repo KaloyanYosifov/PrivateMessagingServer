@@ -42,11 +42,11 @@ class Conversation extends Model
          * @var Conversation $conversation
          */
         $table = (new ConversationUser())->getTable();
-        $foundConversation = DB::table("$table as user1")
+        $foundConversation = DB::table("$table as conversation_user1")
             ->select('*')
-            ->where('user1.user_id', $user->id)
-            ->join("$table as user2", 'user2.conversation_id', '=', 'user1.conversation_id')
-            ->where('user2.user_id', $user2->id)
+            ->where('conversation_user1.user_id', $user->id)
+            ->join("$table as conversation_user2", 'conversation_user2.conversation_id', '=', 'conversation_user1.conversation_id')
+            ->where('conversation_user2.user_id', $user2->id)
             ->pluck('conversation_id')
             ->toArray();
 
