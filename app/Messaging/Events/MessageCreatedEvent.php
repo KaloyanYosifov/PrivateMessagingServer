@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageCreatedEvent implements ShouldBroadcast
 {
-    use InteractsWithQueue, Dispatchable, SerializesModels, InteractsWithSockets;
+    use Dispatchable, SerializesModels, InteractsWithSockets;
 
     /**
      * @var Message
