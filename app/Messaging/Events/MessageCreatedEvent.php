@@ -4,6 +4,7 @@ namespace App\Messaging\Events;
 
 use App\Messaging\Models\Message;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageCreatedEvent implements ShouldBroadcast
 {
-    use Dispatchable, SerializesModels, InteractsWithSockets;
+    use InteractsWithQueue, Dispatchable, SerializesModels, InteractsWithSockets;
 
     /**
      * @var Message
@@ -37,5 +38,15 @@ class MessageCreatedEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         return new PrivateChannel('conversation.message.created.' . $this->message->conversation_id);
+    }
+
+    /**
+     * Set the event name
+     *
+     * @return string
+     */
+    public function broadcastAs()
+    {
+        return 'message.created.event';
     }
 }
