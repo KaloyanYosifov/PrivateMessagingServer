@@ -58,7 +58,7 @@ class Conversation extends Model
             });
         }
 
-        return Conversation::find($foundConversation[0])->first();
+        return Conversation::find($foundConversation[0]);
     }
 
     public function hasUser(User $user): bool

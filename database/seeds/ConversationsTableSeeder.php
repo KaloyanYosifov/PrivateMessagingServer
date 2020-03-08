@@ -47,7 +47,7 @@ class ConversationsTableSeeder extends Seeder
                     continue;
                 }
 
-                $users = [$user, $user2];
+                $usersToChooseFrom = [$user, $user2];
 
                 $conversation = \App\Messaging\Models\Conversation::findOrCreate($user, $user2);
 
@@ -57,7 +57,7 @@ class ConversationsTableSeeder extends Seeder
 
                     factory(Message::class)->create([
                         'conversation_id' => $conversation->id,
-                        'user_id' => $users[$senderIndex],
+                        'user_id' => $usersToChooseFrom[$senderIndex],
                         'created_at' => $randomDates[$randomDateIndex],
                         'updated_at' => $randomDates[$randomDateIndex],
                     ]);
