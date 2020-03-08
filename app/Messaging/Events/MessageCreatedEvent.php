@@ -36,6 +36,6 @@ class MessageCreatedEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('message.created.' . $this->message->conversation_id);
+        return new PrivateChannel('conversation.message.created.' . $this->message->conversation_id);
     }
 }

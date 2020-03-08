@@ -13,6 +13,6 @@
 
 use App\Messaging\Models\Message;
 
-Broadcast::channel('message.created.{id}', function ($user, $id) {
+Broadcast::channel('conversation.message.created.{id}', function ($user, $id) {
     return Message::find($id)->conversation->hasUser($user);
 });
