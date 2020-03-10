@@ -11,8 +11,8 @@
 |
 */
 
-use App\Messaging\Models\Message;
+use App\Messaging\Models\Conversation;
 
 Broadcast::channel('conversation.message.created.{id}', function ($user, $id) {
-    return Message::find($id)->conversation->hasUser($user);
+    return Conversation::find($id)->hasUser($user);
 });
