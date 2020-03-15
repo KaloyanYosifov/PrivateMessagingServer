@@ -122,4 +122,22 @@ class ConversationTest extends TestCase
 
         $this->assertTrue($latestMessage->is($conversation->last_message));
     }
+
+    /** @test */
+    public function its_updated_at_column_is_updated_when_a_message_is_created()
+    {
+        $user = factory(User::class)->create();
+        $user2 = factory(User::class)->create();
+        $conversation = Conversation::findOrCreate($user, $user2);
+
+        $conversation->updated_at = Carbon::now()->subDay();
+        $conversation->update();
+
+        factory(Message::class)->create([
+            'user_id' => $user,
+            'conversation_id' => $conversation->id,
+        ]);
+
+        $this->assertNotEquals($conversation->updated_at->timestamp, $conversation->fresh()->updated_at->timestamp);
+    }
 }

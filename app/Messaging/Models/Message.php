@@ -25,6 +25,8 @@ class Message extends Model
 
         static::creating(function (Message $message) {
             $message->unique_id = Uuid::uuid4();
+
+            Conversation::updateTheTimestamps($message->conversation_id);
         });
     }
 

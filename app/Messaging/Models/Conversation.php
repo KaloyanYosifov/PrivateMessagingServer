@@ -3,6 +3,7 @@
 namespace App\Messaging\Models;
 
 use App\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -83,5 +84,12 @@ class Conversation extends Model
         ]);
 
         return $this;
+    }
+
+    public static function updateTheTimestamps(int $id)
+    {
+        DB::table((new Conversation())->getTable())->where('id', $id)->update([
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }
