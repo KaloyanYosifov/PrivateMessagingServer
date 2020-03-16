@@ -4,6 +4,7 @@ namespace App;
 
 use App\Messaging\Models\Message;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 use App\Messaging\Models\Conversation;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,6 +55,11 @@ class User extends Authenticatable
     public function sentMessages(int $conversationId): HasMany
     {
         return $this->messages()->where('conversation_id', $conversationId);
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 
     /**
