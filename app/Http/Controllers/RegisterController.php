@@ -24,8 +24,8 @@ class RegisterController extends Controller
 
         $request->replace([
             'grant_type' => 'password',
-            'username' => $user->email,
-            'password' => $user->password,
+            'username' => $request->email,
+            'password' => $request->password,
             'client_id' => $passwordClient->id,
             'client_secret' => $passwordClient->secret,
             'scope' => '',
