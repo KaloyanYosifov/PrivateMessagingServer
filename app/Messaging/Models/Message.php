@@ -5,16 +5,23 @@ namespace App\Messaging\Models;
 use App\User;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
     protected $fillable = [
         'text',
+        'audio_path',
     ];
 
     protected $hidden = [
         'user_id',
+        'audio_path',
+    ];
+
+    protected $appends = [
+        'audio_url',
     ];
 
     protected $with = ['user'];
@@ -38,6 +45,15 @@ class Message extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getAudioUrlAttribute(): string
+    {
+        if (!$this->attributes['audio_path']) {
+            return '';
+        }
+
+        return Storage::cloud()->url($this->attributes['audio_path']);
     }
 
     public function getRouteKeyName(): string

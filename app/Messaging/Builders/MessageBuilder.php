@@ -22,7 +22,12 @@ class MessageBuilder
     /**
      * @var string
      */
-    protected $text;
+    protected $text = '';
+
+    /**
+     * @var string
+     */
+    protected $audioPath;
 
     /**
      * @var Conversation|null
@@ -57,6 +62,13 @@ class MessageBuilder
         return $this;
     }
 
+    public function setAudioPath(string $path): self
+    {
+        $this->audioPath = $path;
+
+        return $this;
+    }
+
     /**
      * @return Message
      * @throws \Throwable
@@ -73,6 +85,7 @@ class MessageBuilder
             'user_id' => $this->fromUser->id,
             'conversation_id' => $conversation->id,
             'text' => $this->text,
+            'audio_path' => $this->audioPath,
         ]);
     }
 
@@ -80,7 +93,6 @@ class MessageBuilder
     {
         $fields = [
             'fromUser',
-            'text',
         ];
 
         foreach ($fields as $field) {

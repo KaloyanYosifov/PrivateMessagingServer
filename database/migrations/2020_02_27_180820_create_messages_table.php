@@ -19,6 +19,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('conversation_id')->index();
             $table->text('text');
+            $table->text('audio_path')->nullable(true);
             $table->dateTime('read_at')->nullable(true);
             $table->timestamps();
         });

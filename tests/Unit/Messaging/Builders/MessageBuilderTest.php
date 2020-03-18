@@ -4,6 +4,7 @@ namespace Tests\Unit\Messaging\Builders;
 
 use App\User;
 use App\Messaging\Models\Conversation;
+use Illuminate\Support\Facades\Storage;
 use App\Messaging\Builders\MessageBuilder;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -46,6 +47,25 @@ class MessageBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_can_build_a_message_with_audio_path_only()
+    {
+        $fromUser = factory(User::class)->create();
+        /**
+         * @var Conversation $conversation
+         */
+        $conversation = $fromUser->conversations()->create();
+        $messageBuilder = app()->make(MessageBuilder::class);
+        $audioFilePath = 'messages/audio/audio-file.acc';
+        $message = $messageBuilder
+            ->setSender($fromUser)
+            ->setConversation($conversation)
+            ->setAudioPath($audioFilePath)
+            ->build();
+
+        $this->assertEquals($message->audio_url, Storage::cloud()->url($audioFilePath));
+    }
+
+    /** @test */
     public function it_throws_an_error_if_we_dont_have_one_of_the_fields()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -54,7 +74,7 @@ class MessageBuilderTest extends TestCase
         $toUser = factory(User::class)->create();
         $messageBuilder = app()->make(MessageBuilder::class);
 
-        $messageBuilder->setSender($fromUser)->setReceiver($toUser)->build();
+        $messageBuilder->setSender($fromUser)->build();
     }
 
     /** @test */

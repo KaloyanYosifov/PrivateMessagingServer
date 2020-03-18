@@ -3,8 +3,10 @@
 namespace App\Messaging\Http\Requests;
 
 use App\User;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth;
 use App\Messaging\Models\Conversation;
+use Illuminate\Support\Facades\Storage;
 use App\Messaging\Builders\MessageBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,6 +33,7 @@ class CreateMessageRequest extends FormRequest
             'receiver_id' => 'required_without:conversation_id|exists:users,id',
             'conversation_id' => 'required_without:receiver_id|exists:conversations,id',
             'text' => 'required|string',
+            'audio_file' => 'nullable|file',
         ];
     }
 
@@ -41,6 +44,15 @@ class CreateMessageRequest extends FormRequest
                 $builder->setConversation(Conversation::find($conversationId));
             } elseif ($receiverId = $this->input('receiver_id')) {
                 $builder->setReceiver(User::find($receiverId));
+            }
+
+            if ($audioFile = $this->file('audio_file')) {
+                $fileLocalPath = Storage::cloud()->putFileAs(
+                    'messages/audio',
+                    $audioFile,
+                    Uuid::uuid4()->toString() . '.' . $audioFile->getClientOriginalExtension());
+
+                $builder->setAudioPath($fileLocalPath);
             }
 
             $builder->setSender(Auth::user())
