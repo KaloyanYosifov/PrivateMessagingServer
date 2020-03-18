@@ -71,7 +71,6 @@ class MessageBuilderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $fromUser = factory(User::class)->create();
-        $toUser = factory(User::class)->create();
         $messageBuilder = app()->make(MessageBuilder::class);
 
         $messageBuilder->setSender($fromUser)->build();
