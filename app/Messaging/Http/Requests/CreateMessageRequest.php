@@ -32,7 +32,7 @@ class CreateMessageRequest extends FormRequest
         return [
             'receiver_id' => 'required_without:conversation_id|exists:users,id',
             'conversation_id' => 'required_without:receiver_id|exists:conversations,id',
-            'text' => 'required|string',
+            'text' => 'required_without:audio_file|string',
             'audio_file' => 'nullable|file',
         ];
     }
@@ -55,8 +55,11 @@ class CreateMessageRequest extends FormRequest
                 $builder->setAudioPath($fileLocalPath);
             }
 
-            $builder->setSender(Auth::user())
-                ->setText($this->input('text'));
+            if ($text = $this->input('text')) {
+                $builder->setText($text);
+            }
+
+            $builder->setSender(Auth::user());
         });
     }
 }
