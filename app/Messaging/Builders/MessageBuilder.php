@@ -87,7 +87,7 @@ class MessageBuilder
             'conversation_id' => $conversation->id,
             'text' => $this->text,
             'attachment_id' => optional($this->attachment)->id,
-        ]);
+        ])->fresh();
     }
 
     protected function checkIfWeHaveRequiredFields()
