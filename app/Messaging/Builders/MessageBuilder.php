@@ -3,6 +3,7 @@
 namespace App\Messaging\Builders;
 
 use App\User;
+use App\Attachment;
 use App\Messaging\Models\Message;
 use App\Messaging\Models\Conversation;
 use App\Messaging\Exceptions\UserNotInConversationException;
@@ -25,9 +26,9 @@ class MessageBuilder
     protected $text = '';
 
     /**
-     * @var string
+     * @var Attachment
      */
-    protected $audioPath;
+    protected $attachment;
 
     /**
      * @var Conversation|null
@@ -62,9 +63,9 @@ class MessageBuilder
         return $this;
     }
 
-    public function setAudioPath(string $path): self
+    public function setAttachment(Attachment $attachment): self
     {
-        $this->audioPath = $path;
+        $this->attachment = $attachment;
 
         return $this;
     }
@@ -85,7 +86,7 @@ class MessageBuilder
             'user_id' => $this->fromUser->id,
             'conversation_id' => $conversation->id,
             'text' => $this->text,
-            'audio_path' => $this->audioPath,
+            'attachment_id' => optional($this->attachment)->id,
         ]);
     }
 

@@ -4,9 +4,11 @@ namespace App\Messaging\Http\Requests;
 
 use App\User;
 use Ramsey\Uuid\Uuid;
+use App\Enums\AttachmentType;
 use Illuminate\Support\Facades\Auth;
 use App\Messaging\Models\Conversation;
 use Illuminate\Support\Facades\Storage;
+use App\Services\CreateAttachmentService;
 use App\Messaging\Builders\MessageBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -47,12 +49,9 @@ class CreateMessageRequest extends FormRequest
             }
 
             if ($audioFile = $this->file('audio_file')) {
-                $fileLocalPath = Storage::cloud()->putFileAs(
-                    'messages/audio',
-                    $audioFile,
-                    Uuid::uuid4()->toString() . '.' . $audioFile->getClientOriginalExtension());
+                $attachment = app()->make(CreateAttachmentService::class)->create($audioFile, AttachmentType::AUDIO());
 
-                $builder->setAudioPath($fileLocalPath);
+                $builder->setAttachment($attachment);
             }
 
             if ($text = $this->input('text')) {

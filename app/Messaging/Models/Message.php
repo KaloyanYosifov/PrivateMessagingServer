@@ -3,6 +3,7 @@
 namespace App\Messaging\Models;
 
 use App\User;
+use App\Attachment;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -12,19 +13,15 @@ class Message extends Model
 {
     protected $fillable = [
         'text',
-        'audio_path',
+        'attachment_id',
     ];
 
     protected $hidden = [
         'user_id',
-        'audio_path',
+        'attachment_id',
     ];
 
-    protected $appends = [
-        'audio_url',
-    ];
-
-    protected $with = ['user'];
+    protected $with = ['user', 'attachment'];
 
     public static function boot()
     {
@@ -47,13 +44,9 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getAudioUrlAttribute(): string
+    public function attachment()
     {
-        if (!$this->attributes['audio_path']) {
-            return '';
-        }
-
-        return Storage::cloud()->url($this->attributes['audio_path']);
+        return $this->belongsTo(Attachment::class);
     }
 
     public function getRouteKeyName(): string
