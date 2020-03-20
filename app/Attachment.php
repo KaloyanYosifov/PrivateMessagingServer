@@ -15,6 +15,10 @@ class Attachment extends Model
         'url',
     ];
 
+    protected $casts = [
+        'duration_in_seconds' => 'int',
+    ];
+
     public function messages()
     {
         return $this->hasMany(Message::class);

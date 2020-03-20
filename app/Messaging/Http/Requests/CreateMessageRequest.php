@@ -36,6 +36,7 @@ class CreateMessageRequest extends FormRequest
             'conversation_id' => 'required_without:receiver_id|exists:conversations,id',
             'text' => 'required_without:audio_file|string',
             'audio_file' => 'nullable|file',
+            'duration' => 'required_with:audio_file|int',
         ];
     }
 
@@ -49,7 +50,12 @@ class CreateMessageRequest extends FormRequest
             }
 
             if ($audioFile = $this->file('audio_file')) {
-                $attachment = app()->make(CreateAttachmentService::class)->create($audioFile, AttachmentType::AUDIO());
+                $attachment = app()->make(CreateAttachmentService::class)
+                    ->create(
+                        $audioFile,
+                        AttachmentType::AUDIO(),
+                        $this->input('duration')
+                    );
 
                 $builder->setAttachment($attachment);
             }
