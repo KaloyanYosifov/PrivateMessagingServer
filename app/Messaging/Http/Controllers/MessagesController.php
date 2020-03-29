@@ -9,7 +9,6 @@ use App\Messaging\Http\Requests\ShowMessageRequest;
 use App\Messaging\Http\Requests\CreateMessageRequest;
 use App\Messaging\Http\Requests\UpdateMessageRequest;
 use App\Messaging\Http\Requests\DeleteMessageRequest;
-use App\Messaging\Http\Requests\AudioUploadMessageRequest;
 
 class MessagesController
 {
